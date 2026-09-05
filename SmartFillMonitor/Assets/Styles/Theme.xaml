@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--主应用深色背景-->
+    <SolidColorBrush x:Key="AppBgDark" Color="#1E1E1E"/>
+    <!--面板、内容背景-->
+    <SolidColorBrush x:Key="AppBgPanel" Color="#252526"/>
+    <!--Tab、Header背景-->
+    <SolidColorBrush x:Key="AppBgHeader" Color="#2D2D30"/>
+    <!--主按钮、选中导航、边框背景-->
+    <SolidColorBrush x:Key="AppAccentColor" Color="#1E1E1E"/>
+    <!--主要文字、正文、标题背景-->
+    <SolidColorBrush x:Key="AppTextMain" Color="#FFFFFF"/>
+    <!--次要文字、占位文本背景-->
+    <SolidColorBrush x:Key="AppTextMuted" Color="#AAAAAA"/>
+    <!--成功、正常状态背景-->
+    <SolidColorBrush x:Key="AppSuccess" Color="#4CAF50"/>
+    <!--信息提示背景-->
+    <SolidColorBrush x:Key="AppInfo" Color="#4CAF50"/>
+    <!--警告背景-->
+    <SolidColorBrush x:Key="AppWarning" Color="#FF9800"/>
+    <!--错误、危险背景-->
+    <SolidColorBrush x:Key="AppDanger" Color="#D50000"/>
+    <!--通用边框、控件边框、Grid背景-->
+    <SolidColorBrush x:Key="AppBorderBrush" Color="#3E3E42"/>
+</ResourceDictionary>
