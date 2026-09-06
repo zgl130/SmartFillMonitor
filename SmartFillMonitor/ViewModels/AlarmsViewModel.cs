@@ -8,5 +8,9 @@ namespace SmartFillMonitor.ViewModels
 {
     public class AlarmsViewModel
     {
+        public AlarmsViewModel()
+        {
+                
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SmartFillMonitor.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +21,9 @@ namespace SmartFillMonitor
         public MainWindow()
         {
             InitializeComponent();
+            var app = Application.Current as App;
+            if (app != null)
+                this.DataContext = app.ServiceProvider.GetRequiredService<MainWindowModel>();
         }
     }
 }

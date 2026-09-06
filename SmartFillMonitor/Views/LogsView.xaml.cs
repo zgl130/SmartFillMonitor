@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SmartFillMonitor.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,9 @@ namespace SmartFillMonitor.Views
         public LogsView()
         {
             InitializeComponent();
+            var app = Application.Current as App;
+            if (app != null)
+                this.DataContext = app.ServiceProvider.GetRequiredService<LogsViewModel>();
         }
     }
 }
