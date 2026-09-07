@@ -7,7 +7,7 @@
     <!--Tab、Header背景-->
     <SolidColorBrush x:Key="AppBgHeader" Color="#2D2D30"/>
     <!--主按钮、选中导航、边框背景-->
-    <SolidColorBrush x:Key="AppAccentColor" Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="AppAccentColor" Color="#007ACC"/>
     <!--主要文字、正文、标题背景-->
     <SolidColorBrush x:Key="AppTextMain" Color="#FFFFFF"/>
     <!--次要文字、占位文本背景-->

@@ -12,7 +12,6 @@
     <Folder Include="Models\" />
     <Folder Include="Converters\" />
     <Folder Include="Services\" />
-    <Folder Include="UserControls\" />
   </ItemGroup>
 
   <ItemGroup>
