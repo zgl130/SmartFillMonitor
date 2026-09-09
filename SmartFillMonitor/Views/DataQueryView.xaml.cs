@@ -20,14 +20,14 @@ namespace SmartFillMonitor.Views
     /// <summary>
     /// DashQueryView.xaml 的交互逻辑
     /// </summary>
-    public partial class DashQueryView : UserControl
+    public partial class DataQueryView : UserControl
     {
-        public DashQueryView()
+        public DataQueryView()
         {
             InitializeComponent();
             var app = Application.Current as App;
             if (app != null)
-                this.DataContext = app.ServiceProvider.GetRequiredService<DashQueryViewModel>();
+                this.DataContext = app.ServiceProvider.GetRequiredService<DataQueryViewModel>();
         }
     }
 }

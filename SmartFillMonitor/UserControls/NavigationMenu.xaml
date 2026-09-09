@@ -22,7 +22,7 @@
                 </StackPanel>
             </RadioButton>
 
-            <RadioButton Style="{StaticResource NavItemStyle}" GroupName="Nav" IsChecked="False" Command="{Binding DataContext.NavgiateCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="DashQuery">
+            <RadioButton Style="{StaticResource NavItemStyle}" GroupName="Nav" IsChecked="False" Command="{Binding DataContext.NavgiateCommand,RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="DataQuery">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#x25A6;" FontSize="16" Margin="0,0,10,0"/>
                     <TextBlock Text="数据查询"/>

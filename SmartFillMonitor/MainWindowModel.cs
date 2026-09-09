@@ -49,15 +49,15 @@ namespace SmartFillMonitor
         [RelayCommand]
         private void Navgiate(string? destination)
         {
-            if (destination == null)
+            if (string.IsNullOrEmpty(destination))
                 return;
             switch (destination)
             {
                 case "DashBoard":
                     MainContent = _serviceProvider.GetRequiredService<DashBoardViewModel>();
                     break;
-                case "DashQuery":
-                    MainContent = _serviceProvider.GetRequiredService<DashQueryViewModel>();
+                case "DataQuery":
+                    MainContent = _serviceProvider.GetRequiredService<DataQueryViewModel>();
                     break;
                 case "Logs":
                     MainContent = _serviceProvider.GetRequiredService<LogsViewModel>();

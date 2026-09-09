@@ -62,8 +62,8 @@
     <DataTemplate DataType="{x:Type ViewModels:DashBoardViewModel}">
         <Views:DashBoardView/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type ViewModels:DashQueryViewModel}">
-        <Views:DashQueryView/>
+    <DataTemplate DataType="{x:Type ViewModels:DataQueryViewModel}">
+        <Views:DataQueryView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModels:AlarmsViewModel}">
         <Views:AlarmsView/>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartFillMonitor.ViewModels
 {
-    public class DashQueryViewModel
+    public class DataQueryViewModel
     {
     }
 }

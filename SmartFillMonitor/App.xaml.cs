@@ -30,7 +30,7 @@ namespace SmartFillMonitor
         {
             services.AddSingleton<AlarmsViewModel>();
             services.AddSingleton<DashBoardViewModel>();
-            services.AddSingleton<DashQueryViewModel>();
+            services.AddSingleton<DataQueryViewModel>();
             services.AddSingleton<LogsViewModel>();
             services.AddSingleton<SettingViewModel>();
             services.AddSingleton<MainWindowModel>();
