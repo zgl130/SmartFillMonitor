@@ -7,6 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Button Width="200" Height="50" Content="Logs"/>
     </Grid>
 </UserControl>

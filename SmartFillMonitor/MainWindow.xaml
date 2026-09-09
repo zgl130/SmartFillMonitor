@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SmartFillMonitor"
-        xmlns:views="clr-namespace:SmartFillMonitor.Views"
+        xmlns:UserControls="clr-namespace:SmartFillMonitor.UserControls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Background="{StaticResource AppBgDark}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -16,13 +16,16 @@
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ContentControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"/>
+        <!--左侧导航-->
+        <UserControls:NavigationMenu Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"/>
+        <!--顶部Header-->
         <Border Grid.Row="0" Grid.Column="1" Background="{StaticResource AppBgDark}" BorderBrush="{StaticResource AppBorderBrush}"
                 BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="{Binding CurrentTime}" Foreground="{StaticResource AppTextMain}" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center" Margin="0,0,20,0"/>
             </StackPanel>
         </Border>
-        <ContentControl Grid.Row="1" Grid.Column="1" Background="{StaticResource AppBgDark}"/>
+        <!--面板-->
+        <ContentControl Grid.Row="1" Grid.Column="1" Background="{StaticResource AppBgDark}" Content="{Binding MainContent}"/>
     </Grid>
 </Window>
