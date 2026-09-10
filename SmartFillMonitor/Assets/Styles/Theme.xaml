@@ -3,7 +3,7 @@
                     xmlns:Views="clr-namespace:SmartFillMonitor.Views"
                     xmlns:ViewModels="clr-namespace:SmartFillMonitor.ViewModels"
                     >
-    
+
     <!--主应用深色背景-->
     <SolidColorBrush x:Key="AppBgDark" Color="#1E1E1E"/>
     <!--面板、内容背景-->
@@ -56,6 +56,53 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!--BorderStyle-->
+    <Style x:Key="BorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource AppBgDark}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="15"/>
+    </Style>
+
+    <!--ComboBoxStyle-->
+    <!--不设置Key会自动应用在全局ComboBox上-->
+    <Style TargetType="ComboBox">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="8"/>
+    </Style>
+
+    <!--ButtonStyle-->
+    <Style  TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource AppAccentColor}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Margin}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="0.9"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.9"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
     </Style>
 
     <!--映射View和ViewModels-->

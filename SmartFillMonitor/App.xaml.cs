@@ -17,7 +17,7 @@ namespace SmartFillMonitor
         {
             base.OnStartup(e);
             var services = new ServiceCollection();//创建新的DI服务集合，这是依赖注入第一步。
-            ConfigureServices(services);
+            ConfigureServices(services);//注入View单例到DI容器
             ServiceProvider = services.BuildServiceProvider();//供外部调用
         }
 
