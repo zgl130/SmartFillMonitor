@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SmartFillMonitor.Models;
+using SmartFillMonitor.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +17,7 @@ namespace SmartFillMonitor.ViewModels
         /// <summary>
         /// 端口号
         /// </summary>
-        public ObservableCollection<string> PortName { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> PortName { get; set; } = new ObservableCollection<string>();
         /// <summary>
         /// 波特率
         /// </summary>
@@ -41,25 +43,66 @@ namespace SmartFillMonitor.ViewModels
         public ObservableCollection<string> StopBits { get; set; } = new ObservableCollection<string>(Enum.GetNames(typeof(StopBits)));
 
         [ObservableProperty] private string selectedPortName = "COM1";
-        [ObservableProperty] private int selectedBaudRate = 9600; 
+        [ObservableProperty] private int selectedBaudRate = 9600;
         [ObservableProperty] private int selectedDataBits = 8;
-        [ObservableProperty] private string selectedParity ="None";
+        [ObservableProperty] private string selectedParity = "None";
         [ObservableProperty] private string selectedStopBits = "One";
-        [ObservableProperty]private bool autoConnect = true;
-        [ObservableProperty]private bool alarmSound = true;
-        [ObservableProperty]private bool dubugLogMode = true;
+        [ObservableProperty] private bool autoConnect = true;
+        [ObservableProperty] private bool alarmSound = true;
+        [ObservableProperty] private bool dubugLogMode = true;
+
+        public SettingViewModel()
+        {
+
+            _ = LoadSettings();
+
+        }
+
+        private async Task LoadSettings()
+        {
+            try
+            {
+                var ds = await ConfigServices.LoadDeviceSettingAsync();
+                selectedPortName = ds.PortName;
+                selectedBaudRate = ds.BaudRate;
+                selectedDataBits = ds.DataBits;
+                selectedParity = ds.Parity;
+                selectedStopBits = string.IsNullOrEmpty(ds.StopBits) ? "One" : ds.StopBits;
+                autoConnect = ds.AutoConnect;
+                alarmSound = ds.AlarmSound;
+                dubugLogMode = ds.DebugLogMode;
+                //return;
+            }
+            catch (Exception ex)
+            {
+                //日志加载失败
+            }
+        }
 
         //固定写法CommunityToolkit.Mvvm这个框架会自动生成一个SaveCommand，对应View界面绑定使用。
         [RelayCommand]
         private async Task SaveAsync()
         {
+            try
+            {
+                var model = new DeviceSettings
+                {
+                    PortName = selectedPortName,
+                    BaudRate = selectedBaudRate,
+                    DataBits = selectedDataBits,
+                    Parity = selectedParity,
+                    StopBits = selectedStopBits,
+                    AutoConnect = autoConnect,
+                    AlarmSound = alarmSound,
+                    DebugLogMode = dubugLogMode,
+                };
 
-        }
-
-        public SettingViewModel()
-        {
-
-            
+                await ConfigServices.SaveDeviceSettingAsync(model);
+            }
+            catch (Exception ex)
+            {
+                //保存失败
+            }
         }
 
     }
