@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.Input;
 using SmartFillMonitor.Models;
 using SmartFillMonitor.Services;
+using SmartFillMonitor.Services.Logs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,10 +55,31 @@ namespace SmartFillMonitor.ViewModels
 
         public SettingViewModel()
         {
-
+            RefreashPortList();
             _ = LoadSettings();
 
         }
+        private void RefreashPortList()
+        {
+            PortName.Clear();
+            try
+            {
+                var ports = PlcServices.GetAvailablePorts ?? SerialPort.GetPortNames();
+                foreach (var item in ports)
+                {
+                    PortName.Add(item);
+                }
+                selectedPortName = PortName.Count > 0 ? PortName[0] : selectedPortName;
+            }
+            catch (Exception ex)
+            {
+                LogServices.Error($"获取串口列表失败{ex.Message}");
+                PortName.Clear();
+                PortName.Add("COM1");
+                PortName.Add("COM2");
+            }
+        }
+
 
         private async Task LoadSettings()
         {
@@ -76,6 +99,7 @@ namespace SmartFillMonitor.ViewModels
             catch (Exception ex)
             {
                 //日志加载失败
+                LogServices.Warn($"加载失败,使用默认值，原因：{ex.Message}");
             }
         }
 
@@ -101,6 +125,7 @@ namespace SmartFillMonitor.ViewModels
             }
             catch (Exception ex)
             {
+                LogServices.Error($"保存失败{ex.Message}");
                 //保存失败
             }
         }

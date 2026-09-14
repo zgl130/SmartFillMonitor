@@ -1,4 +1,5 @@
 ﻿using SmartFillMonitor.Models;
+using SmartFillMonitor.Services.Logs;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -58,20 +59,23 @@ namespace SmartFillMonitor.Services
                         settings = JsonSerializer.Deserialize<DeviceSettings>(jsontext, opt);
                         if (settings != null)
                         {
+                            LogServices.Info($"配置文件加载成功{path}");
                             return settings;
                         }
                     }
                     catch (JsonException jsonEx)
                     {
+                        LogServices.Error($"配置文件格式错误,将其重置为默认值：{jsonEx.Message}");
                         BackCorruptFile(path);//备份已经损坏的文件
                     }
                     catch (Exception Ex)
                     {
-                        throw Ex;
+                        LogServices.Error($"读取配置文件失败：{Ex.Message}");
                     }
                 }
                 else
                 {
+                    LogServices.Warn($"配置文件不存在{path},将创建默认配置");
                     //日志提示文件不存在
                 }
             }
@@ -102,10 +106,12 @@ namespace SmartFillMonitor.Services
                 await File.WriteAllTextAsync(tempPath, jsonText);
                 File.Move(tempPath, path,true);//覆盖写入
                 //提示日志
+                LogServices.Info("配置已经保存");
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogServices.Warn($"保存配置文件失败{ex.Message}");
                 return false;
             }
             finally
@@ -132,6 +138,7 @@ namespace SmartFillMonitor.Services
                 //备份路径
                 var backupPath = originalPath + ".corrupt." + DateTime.Now.ToString("yyyyMMddHHmmSS");
                 File.Copy(originalPath, backupPath, true);//拷贝备份
+                LogServices.Warn($"已经备份损坏的配置文件{backupPath}");
             }
             catch (Exception)
             {
