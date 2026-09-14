@@ -5,12 +5,50 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartFillMonitor.Views"
              xmlns:smartFillMonitor="clr-namespace:SmartFillMonitor"
+             xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <TabControl>
         <TabItem Header="Logs">
             <ContentControl Content="{x:Static smartFillMonitor:App.LogView}" />
         </TabItem>
+        <TabItem Header="LogAnalyze">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Background="{StaticResource AppBgDark}" CornerRadius="4" Padding="8" Margin="0,0,0,10">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="从：" VerticalAlignment="Center" Foreground="White" Margin="0,0,5,0"/>
+                        <hc:DateTimePicker SelectedDateTime="{Binding StartDate}" Width="120" VerticalAlignment="Center"/>
 
+                        <TextBlock Text="到：" VerticalAlignment="Center" Foreground="White" Margin="10,0,5,0"/>
+                        <hc:DateTimePicker SelectedDateTime="{Binding EndDate}" Width="120" VerticalAlignment="Center"/>
+                        
+                        <TextBlock Text="等级：" VerticalAlignment="Center" Foreground="White" Margin="20,0,5,0"/>
+                        <ComboBox SelectedItem="{Binding SelectLevel ,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding LogLevel}" Width="100" VerticalAlignment="Center"/>
+
+                        <TextBlock Text="搜索：" VerticalAlignment="Center" Foreground="White" Margin="20,0,5,0"/>
+                        <TextBox Text="{Binding SearchText ,UpdateSourceTrigger=PropertyChanged}" Width="200" VerticalAlignment="Center" ToolTip="输入消息内容或来源内容进行搜索">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <Button Content="查询" Command="{Binding SearchCommand}" Width="80" Margin="10,0,0,0" Background="#007ACC" Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+        </TabItem>
     </TabControl>
 </UserControl>
