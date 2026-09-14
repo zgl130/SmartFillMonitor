@@ -30,8 +30,11 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Oo]ut/
-[Ll]og/
-[Ll]ogs/
+# 注意：原模板的 [Ll]og/ 与 [Ll]ogs/ 会匹配任意层级的 log/logs 目录，
+# 会把业务代码目录 SmartFillMonitor/Services/Logs/ 整个误忽略，
+# 故改为以 / 锚定，只忽略仓库根目录下的日志输出目录。
+/[Ll]og/
+/[Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
