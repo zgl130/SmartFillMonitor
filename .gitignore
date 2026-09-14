@@ -35,6 +35,9 @@ bld/
 # 故改为以 / 锚定，只忽略仓库根目录下的日志输出目录。
 /[Ll]og/
 /[Ll]ogs/
+# Serilog 运行时日志目录（App.xaml.cs: LogPath = "Logs\log-.txt"），
+# 精确锚定到项目目录，绝不误伤 Services/Logs 业务代码
+/SmartFillMonitor/Logs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
