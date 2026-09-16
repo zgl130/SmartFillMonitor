@@ -102,8 +102,10 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-
     </Style>
+    
+    <!--TabControlStyle-->
+    
 
     <!--映射View和ViewModels-->
     <DataTemplate DataType="{x:Type ViewModels:DashBoardViewModel}">
