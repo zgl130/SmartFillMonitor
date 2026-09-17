@@ -6,7 +6,12 @@
              xmlns:local="clr-namespace:SmartFillMonitor.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Width="200" Height="50" Content="DataQuery"/>
-    </Grid>
+    <TabControl Style="{StaticResource AppTabContorStyle}">
+        <TabItem Header="Logs" Style="{StaticResource AppTableItemStyle}">
+           
+        </TabItem>
+        <TabItem Header="LogAnalyze" Style="{StaticResource AppTableItemStyle}">
+            
+        </TabItem>
+    </TabControl>
 </UserControl>

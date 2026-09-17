@@ -103,9 +103,67 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <!--TabItemStyle-->
+    <Style TargetType="TabItem" x:Key="AppTableItemStyle">
+        <Setter Property="Foreground" Value="{StaticResource AppTextMuted}"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Margin" Value="4,0,0,4"/>
+        <Setter Property="MinWidth" Value="64"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid>
+                        <Border x:Name="Bd" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="6,6,0,0" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource AppBgHeader}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AppAccentColor}"/>
+                            <Setter Property="Foreground" Value="{StaticResource AppTextMain}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#777777"/>
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#2e2e2e"/>
+                            <Setter Property="Foreground" Value="{StaticResource AppTextMain}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--TabControlStyle-->
-    
+    <Style TargetType="TabControl" x:Key="AppTabContorStyle">
+        <Setter Property="Background" Value="{StaticResource AppBgDark}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource AppTableItemStyle}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Background="Transparent" Padding="6,6,6,0" >
+                            <TabPanel x:Name="HeaderPanel" IsItemsHost="True" Margin="0,0,0,0"/>
+                        </Border>
+                        <Border Grid.Row="1" Background="{StaticResource AppBgPanel}" BorderBrush="{StaticResource AppBorderBrush}" BorderThickness="1" CornerRadius="0,6,6,6" Margin="0,8,0,0" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="8"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!--映射View和ViewModels-->
     <DataTemplate DataType="{x:Type ViewModels:DashBoardViewModel}">
