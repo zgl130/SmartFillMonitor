@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using HandyControl.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using SmartFillMonitor.Services;
+using SmartFillMonitor.Services.Logs;
 using SmartFillMonitor.ViewModels;
 using System.Configuration;
 using System.Data;
@@ -27,6 +30,7 @@ namespace SmartFillMonitor
         private const string LogTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] ({ThreadId}) {Message:lj}{NewLine}{Exception}";
         private const string LogPath = "Logs\\log-.txt";//会自动生成Logs文件夹，日志文件名会以log-时间来命名
         private const string DbFilePath = "SmartFillMonitor.db";
+        private const string DbConnectionString = "Data Source=SmartFillMonitor.db";//给FreeSql使用
 
         public IServiceProvider ServiceProvider { get; private set; }//公开只读属性，保存已经构建的DI服务，让其他类可以解析到服务
         protected override void OnStartup(StartupEventArgs e)
@@ -34,6 +38,8 @@ namespace SmartFillMonitor
             base.OnStartup(e);
 
             ConfigLogging();//配置日志
+
+            _=InitialCoreServicesAsync();
             var services = new ServiceCollection();//创建新的DI服务集合，这是依赖注入第一步。
             ConfigureServices(services);//注入View单例到DI容器
             ServiceProvider = services.BuildServiceProvider();//供外部调用
@@ -58,6 +64,14 @@ namespace SmartFillMonitor
                 .CreateLogger();
         }
 
+        private async Task InitialCoreServicesAsync()
+        {
+            //Log.Debug("Initial DataBase......");
+            LogServices.Debug("Initial DataBase......");
+            DbServices.Initialze(DbConnectionString);
+
+
+        }
 
         private void ConfigureServices(IServiceCollection services)
         {

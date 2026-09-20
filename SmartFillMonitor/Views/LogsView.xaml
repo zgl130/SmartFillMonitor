@@ -48,7 +48,19 @@
                         <Button Content="导出CSV" Command="{Binding ExportCommand}" Width="80" Margin="10,0,0,0" Background="{StaticResource AppBgPanel}" Foreground="White"/>
                     </StackPanel>
                 </Border>
-                <DataGrid Grid.Row="1" ItemsSource="{Binding Logs}" AutoGenerateColumns="True" IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0"/>
+                <!--AutoGenerateColumns="False"这里和winform一样指定了列，就需要设置列为false，停止自增-->
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Logs}" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="编号" Binding="{Binding ID}" Width="60"/>
+                        <DataGridTextColumn Header="时间" Binding="{Binding TimeStamp, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="160"/>
+                        <DataGridTextColumn Header="等级" Binding="{Binding Level}" Width="100"/>
+                        <DataGridTextColumn Header="异常" Binding="{Binding Exception}" Width="150"/>
+                        <DataGridTextColumn Header="日志内容" Binding="{Binding RenderedMessage}" Width="*"/>
+                        <DataGridTextColumn Header="附加信息" Binding="{Binding Properties}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <!--AutoGenerateColumns="True"这里和winform也一样设置列自增，会自适应数据源的列数据，但是改这一列时间格式不行，还有列抬头名是来自数据源的属性名，不能改，能改改实体类属性名为中文。。-->
+                <!--<DataGrid Grid.Row="1" ItemsSource="{Binding Logs}" AutoGenerateColumns="True" IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0"/>-->
                 <Grid Grid.Row="2" Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -61,7 +73,7 @@
                     <StackPanel Grid.Column="2" Orientation="Horizontal">
                         <TextBlock Text="{Binding TotalCount,StringFormat='共{0}条记录'}" VerticalAlignment="Center" Foreground="Gray" Margin="0,0,20,0"/>
                         <Button Content="上一页" Command="{Binding PrevPageCommand}" Width="80" Background="{StaticResource AppBgPanel}" Foreground="White"/>
-                        <TextBlock Text="{Binding TotalCount,StringFormat='第{0}页'}" VerticalAlignment="Center" Foreground="White" Margin="0,0,20,0" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding PageIndex,StringFormat='第{0}页'}" VerticalAlignment="Center" Foreground="White" Margin="20,0,20,0" FontWeight="Bold"/>
                         <Button Content="下一页" Command="{Binding NextPageCommand}" Width="80" Background="{StaticResource AppBgPanel}" Foreground="White"/>
 
 

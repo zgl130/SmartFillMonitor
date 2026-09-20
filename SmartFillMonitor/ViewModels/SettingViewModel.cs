@@ -69,6 +69,8 @@ namespace SmartFillMonitor.ViewModels
                 {
                     PortName.Add(item);
                 }
+
+                //PortName = new ObservableCollection<string>(ports);同等效应
                 selectedPortName = PortName.Count > 0 ? PortName[0] : selectedPortName;
             }
             catch (Exception ex)
