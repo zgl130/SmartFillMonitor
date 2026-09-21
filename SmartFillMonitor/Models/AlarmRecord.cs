@@ -33,7 +33,6 @@ namespace SmartFillMonitor.Models
         //报警持续时间
         public double? DurationSeconds { get; set; }
 
-
         //是否为活动报警（true代表故障，false代表已恢复）
         public bool IsActive { get; set; }
 

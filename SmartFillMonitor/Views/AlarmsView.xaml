@@ -6,7 +6,28 @@
              xmlns:local="clr-namespace:SmartFillMonitor.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Width="200" Height="50" Content="Alarm"/>
-    </Grid>
+    <TabControl Style="{StaticResource AppTabContorStyle}">
+        <TabItem Header="活动报警" Style="{StaticResource AppTableItemStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="12">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="单前活动报警" FontSize="20" FontWeight="Bold" Foreground="{StaticResource AppTextMain}"/>
+                        <Border Background="{StaticResource AppDanger}" CornerRadius="10" Padding="8,4" VerticalAlignment="Center" >
+                            <TextBlock Text="{Binding ActiveAlarmCount}" FontSize="14" Foreground="White" FontWeight="Bold"/>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="⟲刷新" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Width="90" Style="{StaticResource OutLineButton}"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="历史报警" Style="{StaticResource AppTableItemStyle}">
+
+        </TabItem>
+    </TabControl>
 </UserControl>
