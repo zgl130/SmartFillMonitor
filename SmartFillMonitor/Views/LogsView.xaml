@@ -75,8 +75,6 @@
                         <Button Content="上一页" Command="{Binding PrevPageCommand}" Width="80" Background="{StaticResource AppBgPanel}" Foreground="White"/>
                         <TextBlock Text="{Binding PageIndex,StringFormat='第{0}页'}" VerticalAlignment="Center" Foreground="White" Margin="20,0,20,0" FontWeight="Bold"/>
                         <Button Content="下一页" Command="{Binding NextPageCommand}" Width="80" Background="{StaticResource AppBgPanel}" Foreground="White"/>
-
-
                     </StackPanel>
                 </Grid>
             </Grid>
