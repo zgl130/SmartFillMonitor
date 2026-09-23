@@ -34,7 +34,7 @@ namespace SmartFillMonitor.Models
         public double? DurationSeconds { get; set; }
 
         //是否为活动报警（true代表故障，false代表已恢复）
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
         //是否人工确认
         public bool IsAcknowledged { get; set; }

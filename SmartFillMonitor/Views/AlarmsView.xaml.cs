@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SmartFillMonitor.Models;
+using SmartFillMonitor.Services;
 using SmartFillMonitor.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,14 @@ namespace SmartFillMonitor.Views
                 this.DataContext = app.ServiceProvider.GetRequiredService<AlarmsViewModel>();
         }
 
-
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            await AlarmsServices.TriggerAlarmsAsync(new AlarmRecord
+            {
+                AlarmCode = AlarmCode.CommunicationError,
+                Message = "Plc 通信失败，请检查",
+                AlarmSeverity = AlarmSeverity.Error,
+            });
+        }
     }
 }

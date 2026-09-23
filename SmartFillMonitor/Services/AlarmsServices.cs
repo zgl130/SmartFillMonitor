@@ -42,7 +42,13 @@ namespace SmartFillMonitor.Services
 
                 if (isAlareadyActive) return;   //已经存在报警了，就直接返回
                                                 //
-                await DbServices.Fsql.Insert<AlarmRecord>().ExecuteAffrowsAsync();
+                await DbServices.Fsql.Insert<AlarmRecord>(alarmRecord).ExecuteAffrowsAsync();
+
+                var lassetRecord=await DbServices.Fsql.Select<AlarmRecord>().Where(a=>a.AlarmCode==alarmRecord.AlarmCode).FirstAsync();
+                if (lassetRecord!=null)
+                {
+                    alarmRecord = lassetRecord;
+                } 
                 LogServices.Warn($"触发报警：{alarmRecord.AlarmCode}，严重级别：{alarmRecord.AlarmSeverity}，消息：{alarmRecord.Message}");
                 AlarmTriggered?.Invoke(null, alarmRecord);
             }
@@ -92,10 +98,10 @@ namespace SmartFillMonitor.Services
             try
             {
                 var result = await DbServices.Fsql.Update<AlarmRecord>()
-                   .Set(a => a.IsActive, true)
+                   .Set(a => a.IsAcknowledged, true)
                    .Set(a => a.AckTime, DateTime.Now)
                    .Set(a => a.AckUser, operatorname)
-                   .Where(a => a.Id == alarmid && !a.IsActive)
+                   .Where(a => a.Id == alarmid && !a.IsAcknowledged)
                    .ExecuteAffrowsAsync();
 
                 if (result > 0)
@@ -122,7 +128,7 @@ namespace SmartFillMonitor.Services
             try
             {
                 return await DbServices.Fsql.Select<AlarmRecord>()
-                               .Where(a => a.IsActive)
+                               .Where(a => a.IsActive && a.IsAcknowledged)
                                .OrderByDescending(a => a.StartTime)
                                .ToListAsync();
             }

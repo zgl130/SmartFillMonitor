@@ -31,7 +31,7 @@
                             <TextBlock Text="{Binding ActiveAlarmCount}" FontSize="14" Foreground="White" FontWeight="Bold"/>
                         </Border>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="⥁刷新" Command="{Binding RefreshCommand}" FontSize="18" HorizontalAlignment="Right" Width="90" Style="{StaticResource OutLineButton}"/>
                     </StackPanel>
                 </Grid>
@@ -121,6 +121,9 @@
                     </Grid>
                 </Border>
             </Grid>
+        </TabItem>
+        <TabItem Header="测试报警">
+            <Button Content="测试添加报警" Click="Button_Click" Width="100" Height="50"/>
         </TabItem>
     </TabControl>
 </UserControl>
