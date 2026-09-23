@@ -6,7 +6,156 @@
              xmlns:local="clr-namespace:SmartFillMonitor.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
-        <Button Width="200" Height="50" Content="DashBoard"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0,0,20,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{StaticResource BorderStyle}" Margin="0,0,10,0">
+                <!--card1:产量-->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="单前产量(PCS)" Foreground="{StaticResource AppTextMuted}"  FontSize="14"  Margin="0,0,0,10"/>
+                    <StackPanel>
+                        <TextBlock Text="{Binding ActualCount,StringFormat='{}{0:N0}'}" Foreground="{StaticResource AppAccentColor}" FontSize="32" FontWeight="Bold" FontFamily="{StaticResource FontMono}"/>
+                    </StackPanel>
+                    <TextBlock Foreground="{StaticResource AppSuccess}" FontSize="12" Margin="0,5,0,0">
+                        <Run Text="↑ 目标达成率"/>
+                        <Run Text="{Binding ActualCount}"/>
+                        <Run Text="/"/>
+                        <Run Text="{Binding TargetCount}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Style="{StaticResource BorderStyle}" Margin="0,0,10,0">
+                <!--card2:温度-->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="实时温度(℃)" Foreground="{StaticResource AppTextMuted}"  FontSize="14"  Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding CurrentTemp}" Foreground="{StaticResource AppAccentColor}"  FontSize="32"  Margin="0,0,0,10" FontWeight="Bold" FontFamily="{StaticResource FontMono}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="设定值：" Foreground="{StaticResource AppAccentColor}" FontSize="12" Margin="0,5,0,0"/>
+                        <TextBlock Text="{Binding SettingTemp}" Foreground="{StaticResource AppTextMuted}" FontSize="12" Margin="0,5,0,0"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource BorderStyle}" Margin="0,0,10,0">
+                <!--card3:运行时间-->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="运行时间(H)" Foreground="{StaticResource AppTextMuted}"  FontSize="14"  Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding RunningTime}" Foreground="{StaticResource AppAccentColor}"  FontSize="32"  Margin="0,0,0,10" FontWeight="Bold" FontFamily="{StaticResource FontMono}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="设备状态：" Foreground="{StaticResource AppAccentColor}" FontSize="12"/>
+                        <TextBlock Text="{Binding DeviceStatus}" Foreground="{StaticResource AppSuccess}" FontSize="12" Margin="0,5,0,0"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="3" Style="{StaticResource BorderStyle}" Margin="0,0,10,0">
+                <!--card4:单前节拍-->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="当前节拍(s)" Foreground="{StaticResource AppTextMuted}"  FontSize="14"  Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding CurrentCycleTime}" Foreground="{StaticResource AppAccentColor}"  FontSize="32"  Margin="0,0,0,10" FontWeight="Bold" FontFamily="{StaticResource FontMono}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="标准：" Foreground="{StaticResource AppAccentColor}" FontSize="12"/>
+                        <TextBlock Text="{Binding StandarCycleTime}" Foreground="{StaticResource AppSuccess}" FontSize="12" Margin="0,5,0,0"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--灌装工位实时状态-->
+            <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource BorderStyle}" Margin="0,0,10,10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <TextBlock Text="灌装工位实时状态" Foreground="{StaticResource AppTextMuted}" FontSize="14" HorizontalAlignment="Left"/>
+                        <ContentControl HorizontalAlignment="Right">
+                            <ContentControl.Template>
+                                <ControlTemplate TargetType="ContentControl">
+                                    <StackPanel Orientation="Horizontal" x:Name="Container">
+                                        <Ellipse x:Name="ValueEillipse" Width="10" Height="10" Fill="{StaticResource AppTextMuted}" Margin="0,0,5,0" />
+                                        <TextBlock x:Name="ValueText" Text="阀门关闭" Foreground="{StaticResource AppTextMuted}" FontSize="12"/>
+                                    </StackPanel>
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding ValueOpen}" Value="True">
+                                            <Setter TargetName="ValueEillipse" Property="Fill" Value="{StaticResource AppSuccess}"/>
+                                            <Setter TargetName="ValueText" Property="Foreground" Value="{StaticResource AppSuccess}"/>
+                                            <Setter TargetName="ValueText" Property="Text" Value="阀门关闭"/>
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard x:Name="Pulse">
+                                                    <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                        <DoubleAnimation Storyboard.TargetName="ValueEillipse" Storyboard.TargetProperty="Opacity" From="1.0" To="0.35" Duration="0:0:1"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ContentControl.Template>
+                        </ContentControl>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <Border Width="150" Height="200" Background="#333" BorderBrush="#555" BorderThickness="2">
+                                <Grid >
+                                    <Rectangle x:Name="LiquidLevel" VerticalAlignment="Bottom" Opacity="0.8" Height="{Binding LiquidLevel}">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                                                <GradientStop Color="#007ACC" Offset="0"/>
+                                                <GradientStop Color="#00AAFF" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock Text="原料桶" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <TextBlock HorizontalAlignment="Center" Margin="0,10,0,0">
+                                <Run Text="液位" Foreground="{StaticResource AppTextMuted}"/>
+                                <Run Text="{Binding LiquidLevel}" Foreground="White"/>
+                                <Run Text="%" Foreground="{StaticResource AppTextMuted}"/>
+                            </TextBlock>
+                        </StackPanel>
+                        <Border Grid.Column="1" BorderBrush="#444" BorderThickness="1">
+                            <Grid>
+                                <!--传送带-->
+                                <Rectangle Height="10" VerticalAlignment="Bottom" Margin="0,0,0,20" Fill="#555"/>
+                                <Border Width="40" Height="80" Background="{StaticResource AppAccentColor}" VerticalAlignment="Bottom" Margin="0,0,0,30">
+                                    <TextBlock Text="Bottle" Foreground="White" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/> 
+                                </Border>
+                                <!--阀门标签-->
+                                <TextBlock Text="[  灌装阀门 ]" Foreground="#AAA" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
+                                <Rectangle Width="4" Height="50" Fill="Cyan" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Visibility="{Binding ValueOpen,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

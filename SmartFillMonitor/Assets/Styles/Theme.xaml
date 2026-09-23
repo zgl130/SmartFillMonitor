@@ -27,6 +27,8 @@
     <!--通用边框、控件边框、Grid背景-->
     <SolidColorBrush x:Key="AppBorderBrush" Color="#3E3E42"/>
 
+    <FontFamily x:Key="FontMono">Consolas,Courier New</FontFamily>
+
     <!--导航按钮样式-->
     <Style x:Key="NavItemStyle" TargetType="RadioButton">
         <Setter Property="Foreground" Value="{StaticResource AppTextMain}"/>
