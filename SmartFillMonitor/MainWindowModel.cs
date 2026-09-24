@@ -30,6 +30,7 @@ namespace SmartFillMonitor
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += _timer_Tick;
             _timer.Start();
+            Navgiate("DashBoard");//软件启动即进入DashBoard界面
         }
 
         private void _timer_Tick(object? sender, EventArgs e)
