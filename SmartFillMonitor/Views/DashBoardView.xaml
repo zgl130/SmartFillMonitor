@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartFillMonitor.Views"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
@@ -146,7 +147,7 @@
                                 <!--传送带-->
                                 <Rectangle Height="10" VerticalAlignment="Bottom" Margin="0,0,0,20" Fill="#555"/>
                                 <Border Width="40" Height="80" Background="{StaticResource AppAccentColor}" VerticalAlignment="Bottom" Margin="0,0,0,30">
-                                    <TextBlock Text="Bottle" Foreground="White" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/> 
+                                    <TextBlock Text="Bottle" Foreground="White" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <!--阀门标签-->
                                 <TextBlock Text="[  灌装阀门 ]" Foreground="#AAA" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
@@ -156,6 +157,86 @@
                     </Grid>
                 </Grid>
             </Border>
+
+            <Border Grid.Column="1" Grid.Row="0" Style="{StaticResource BorderStyle}" Margin="0,0,0,10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="最新报警" Foreground="{StaticResource AppTextMuted}" FontSize="14" Margin="0,0,0,15" />
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding RecentAlarms}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#333" BorderThickness="0,0,0,1" Padding="5">
+                                        <TextBlock FontSize="12">
+                                            <Run Text="[" Foreground="White"/>
+                                            <Run Text="{Binding Tiem}" Foreground="White"/>
+                                            <Run Text="]" Foreground="White"/>
+                                            <Run Text="{Binding Title}">
+                                                <Run.Style>
+                                                    <Style TargetType="Run">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Level}" Value="Info">
+                                                                <Setter Property="Foreground" Value="{StaticResource AppInfo}"/>
+                                                            </DataTrigger>
+                                                                       
+                                                             <DataTrigger Binding="{Binding Level}" Value="Warning">
+                                                                 <Setter Property="Foreground" Value="{StaticResource AppWarning}"/>
+                                                             </DataTrigger>
+                                                            
+                                                             <DataTrigger Binding="{Binding Level}" Value="Danger">
+                                                                  <Setter Property="Foreground" Value="{StaticResource AppDanger}"/>
+                                                             </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Run.Style>
+                                            </Run>
+                                        </TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Style="{StaticResource BorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="温度趋势曲线(最近一小时)" Foreground="{StaticResource AppTextMuted}" FontSize="14" Margin="0,0,0,15"/>
+                    <Border Grid.Row="1" x:Name="ChartContainer" Background="#111" BorderBrush="#333" BorderThickness="1" MinHeight="150">
+                        <lvc:CartesianChart Series="{Binding TempLiveCharts}" LegendLocation="None" Background="Transparent" DisableAnimations="False"  Margin="8">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis IsEnabled="True">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator IsEnabled="False"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis MinValue="50" MaxValue="150" ShowLabels="True">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator IsEnabled="False"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                        </lvc:CartesianChart>
+                    </Border>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                        <Button Content="▶️启动生产" Command="{Binding StartProdutionCommand}" Margin="0,0,10,0" Width="120"/>
+                        <Button Content="⏹停止生产" Command="{Binding StopProdutionCommand}" Background="{StaticResource AppWarning}" Margin="0,0,10,0" Width="120"/>
+                        <Button Content="🔄复位" Command="{Binding ResetProdutionCommand}" Style="{StaticResource OutLineButton}" Margin="0,0,10,0" Width="120"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
         </Grid>
     </Grid>
 </UserControl>
