@@ -172,10 +172,10 @@
                                     <Border BorderBrush="#333" BorderThickness="0,0,0,1" Padding="5">
                                         <TextBlock FontSize="12">
                                             <Run Text="[" Foreground="White"/>
-                                            <Run Text="{Binding Tiem}" Foreground="White"/>
+                                            <Run Text="{Binding TimeStr}" Foreground="White"/>
                                             <Run Text="]" Foreground="White"/>
-                                            <Run Text="{Binding Title}">
-                                                <Run.Style>
+                                            <Run Text="{Binding Title}" Foreground="{StaticResource AppDanger}">
+                                                <!--<Run.Style>
                                                     <Style TargetType="Run">
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Level}" Value="Info">
@@ -191,7 +191,7 @@
                                                              </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </Run.Style>
+                                                </Run.Style>-->
                                             </Run>
                                         </TextBlock>
                                     </Border>

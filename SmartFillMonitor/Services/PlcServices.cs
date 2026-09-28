@@ -107,7 +107,7 @@ namespace SmartFillMonitor.Services
         private static async Task PollDataLoop(CancellationToken token)
         {
             int errCount = 0;
-            while (token.IsCancellationRequested)
+            while (!token.IsCancellationRequested)
             {
                 try
                 {

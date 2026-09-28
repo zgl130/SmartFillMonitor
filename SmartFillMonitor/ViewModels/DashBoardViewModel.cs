@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using LiveCharts;
 using LiveCharts.Wpf;
 using SmartFillMonitor.Models;
+using SmartFillMonitor.Services;
+using SmartFillMonitor.Services.Logs;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace SmartFillMonitor.ViewModels
@@ -32,7 +35,7 @@ namespace SmartFillMonitor.ViewModels
         private double runningTime;
 
         [ObservableProperty]
-        private string deviceStatus;
+        private string deviceStatus="自动运行";
 
         [ObservableProperty]
         private double currentCycleTime;
@@ -53,7 +56,9 @@ namespace SmartFillMonitor.ViewModels
 
         public DashBoardViewModel()
         {
-            tempLiveCharts = new SeriesCollection
+            PlcServices.DataReceviced += PlcServices_DataReceviced;
+            AlarmsServices.AlarmRecovered += AlarmsServices_AlarmRecovered;
+            TempLiveCharts = new SeriesCollection
             {
                 new ColumnSeries
                 {
@@ -66,22 +71,96 @@ namespace SmartFillMonitor.ViewModels
             };
         }
 
+        private void AlarmsServices_AlarmRecovered(object? sender, AlarmRecord e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                RecentAlarms.Insert(0, AlarmUiModel.FormRecord(e));
+                if (RecentAlarms.Count>10)
+                {
+                    RecentAlarms.RemoveAt(RecentAlarms.Count - 1);
+                }
+            });
+        }
+
+        private void PlcServices_DataReceviced(object? sender, DeviceState e)
+        {
+            _=Task.Run(() =>
+            {
+                ActualCount = e.ActualCount;
+                TargetCount = e.TargetCount;
+                CurrentTemp = e.CurrentTemp;
+                SettingTemp = e.SettingTemp;
+                RunningTime = e.RunningTime;
+                CurrentCycleTime = e.CurrentCycleTime;
+                StandarCycleTime = e.StandarCycleTime;
+                LiquidLevel = e.LiquidLevel;
+                valueOpen = e.ValueOpen;
+                var barCode=e.BarCode??string.Empty;
+            });
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                TempLiveCharts[0].Values.Add(e.CurrentTemp);
+                if (TempLiveCharts[0].Values.Count>40)
+                {
+                    TempLiveCharts[0].Values.RemoveAt(0);
+                }
+            });
+        }
+
         [RelayCommand]
         private async Task StartProdution()
         {
-
+            try
+            {
+                DeviceStatus = "启动中";
+                await PlcServices.WriteCommandAsync("Start", true);
+                await Task.Delay(2000);
+                DeviceStatus = "运行中";
+                LogServices.Info("发送启动命令到PLC");
+            }
+            catch ( Exception ex)
+            {
+                DeviceStatus = "启动失败";
+                LogServices.Error($"启动失败", ex);
+            }
         }
 
         [RelayCommand]
         private async Task StopProdution()
         {
-
+            try
+            {
+                DeviceStatus = "停止中";
+                await PlcServices.WriteCommandAsync("Stop", true);
+                await Task.Delay(2000);
+                DeviceStatus = "停止中";
+                LogServices.Info("发送停止命令到PLC");
+            }
+            catch (Exception ex)
+            {
+                DeviceStatus = "停止失败";
+                LogServices.Error($"停止失败", ex);
+            }
         }
 
         [RelayCommand]
         private async Task ResetProdution()
         {
-
+            try
+            {
+                DeviceStatus = "复位中";
+                await PlcServices.WriteCommandAsync("Stop", true);
+                await Task.Delay(2000);
+                await PlcServices.WriteCommandAsync("Reset", true);
+                DeviceStatus = "已就绪";
+                LogServices.Info("发送复位命令到PLC");
+            }
+            catch (Exception ex)
+            {
+                DeviceStatus = "复位失败";
+                LogServices.Error($"复位失败", ex);
+            }
         }
 
 

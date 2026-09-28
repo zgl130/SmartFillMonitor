@@ -70,6 +70,9 @@ namespace SmartFillMonitor
             LogServices.Debug("Initial DataBase......");
             DbServices.Initialze(DbConnectionString);
 
+            LogServices.Debug("Initial PLC Service");
+            var plcSettings=await ConfigServices.LoadDeviceSettingAsync();
+            await PlcServices.Initialize(plcSettings);
 
         }
 
@@ -82,8 +85,6 @@ namespace SmartFillMonitor
             services.AddSingleton<SettingViewModel>();
             services.AddSingleton<MainWindowModel>();
         }
-
-
 
     }
 
