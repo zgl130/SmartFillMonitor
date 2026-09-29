@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HandyControl.Controls;
 using LiveCharts;
 using LiveCharts.Wpf;
 using SmartFillMonitor.Models;
@@ -35,7 +36,7 @@ namespace SmartFillMonitor.ViewModels
         private double runningTime;
 
         [ObservableProperty]
-        private string deviceStatus="自动运行";
+        private string deviceStatus = "自动运行";
 
         [ObservableProperty]
         private double currentCycleTime;
@@ -47,10 +48,12 @@ namespace SmartFillMonitor.ViewModels
         private double liquidLevel;
 
         [ObservableProperty]
-        private bool valueOpen=true;
+        private bool valueOpen = true;
 
         [ObservableProperty]
         private SeriesCollection tempLiveCharts;
+
+        private string lastBarcode = string.Empty;
 
         public ObservableCollection<AlarmUiModel> RecentAlarms { get; set; } = new ObservableCollection<AlarmUiModel>();
 
@@ -76,7 +79,7 @@ namespace SmartFillMonitor.ViewModels
             Application.Current.Dispatcher.Invoke(() =>
             {
                 RecentAlarms.Insert(0, AlarmUiModel.FormRecord(e));
-                if (RecentAlarms.Count>10)
+                if (RecentAlarms.Count > 10)
                 {
                     RecentAlarms.RemoveAt(RecentAlarms.Count - 1);
                 }
@@ -85,7 +88,7 @@ namespace SmartFillMonitor.ViewModels
 
         private void PlcServices_DataReceviced(object? sender, DeviceState e)
         {
-            _=Task.Run(() =>
+            _ = Task.Run(async () =>
             {
                 ActualCount = e.ActualCount;
                 TargetCount = e.TargetCount;
@@ -96,12 +99,33 @@ namespace SmartFillMonitor.ViewModels
                 StandarCycleTime = e.StandarCycleTime;
                 LiquidLevel = e.LiquidLevel;
                 valueOpen = e.ValueOpen;
-                var barCode=e.BarCode??string.Empty;
+                var barCode = e.BarCode ?? string.Empty;
+                if (!string.IsNullOrEmpty(barCode) && barCode != lastBarcode)
+                {
+                    lastBarcode = barCode;
+                    var record = new ProductionRecord
+                    {
+                        Time = DateTime.Now,
+                        BatchNo = barCode,
+                        SettingTemp = e.SettingTemp,
+                        ActualCount = e.ActualCount,
+                        ActualTemp = e.CurrentTemp,
+                        TragetCount = e.TargetCount,
+                        IsNG = false,
+                        CycleTime = e.CurrentCycleTime,
+                        Operator = ""
+
+                    };
+                    await DbServices.Fsql.Insert<ProductionRecord>(record).ExecuteAffrowsAsync();
+                }
+
+
             });
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 TempLiveCharts[0].Values.Add(e.CurrentTemp);
-                if (TempLiveCharts[0].Values.Count>40)
+                if (TempLiveCharts[0].Values.Count > 40)
                 {
                     TempLiveCharts[0].Values.RemoveAt(0);
                 }
@@ -119,7 +143,7 @@ namespace SmartFillMonitor.ViewModels
                 DeviceStatus = "运行中";
                 LogServices.Info("发送启动命令到PLC");
             }
-            catch ( Exception ex)
+            catch (Exception ex)
             {
                 DeviceStatus = "启动失败";
                 LogServices.Error($"启动失败", ex);
