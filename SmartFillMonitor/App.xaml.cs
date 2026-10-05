@@ -4,6 +4,7 @@ using Serilog;
 using SmartFillMonitor.Services;
 using SmartFillMonitor.Services.Logs;
 using SmartFillMonitor.ViewModels;
+using SmartFillMonitor.Views;
 using System.Configuration;
 using System.Data;
 using System.Security.RightsManagement;
@@ -33,16 +34,29 @@ namespace SmartFillMonitor
         private const string DbConnectionString = "Data Source=SmartFillMonitor.db";//给FreeSql使用
 
         public IServiceProvider ServiceProvider { get; private set; }//公开只读属性，保存已经构建的DI服务，让其他类可以解析到服务
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
             ConfigLogging();//配置日志
 
-            _=InitialCoreServicesAsync();
-            var services = new ServiceCollection();//创建新的DI服务集合，这是依赖注入第一步。
-            ConfigureServices(services);//注入View单例到DI容器
-            ServiceProvider = services.BuildServiceProvider();//供外部调用
+            try
+            {
+                var services = new ServiceCollection();//创建新的DI服务集合，这是依赖注入第一步。
+                ConfigureServices(services);//注入View单例到DI容器
+                ServiceProvider = services.BuildServiceProvider();//供外部调用
+                await InitialCoreServicesAsync();
+                await InitialLoginFolowAsync();
+            }
+            catch (Exception ex)
+            {
+                LogServices.Fatal(string.Format("应用程序启动失败:{0}", ex));
+                System.Windows.MessageBox.Show($"应用程序启动失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(-1);
+            }
+
+           
+
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -77,6 +91,28 @@ namespace SmartFillMonitor
             await PlcServices.Initialize(plcSettings);
 
             LogServices.Info("Core Service Initialized successfully");
+        }
+
+        private async Task InitialLoginFolowAsync()
+        {
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            var loginWindow = new LoginWindow
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            };
+            bool? res = loginWindow.ShowDialog();
+            if (res==true)
+            {
+                LogServices.Info("登录成功，启动主窗口");
+               var Main = ServiceProvider.GetRequiredService<MainWindowModel>();
+                var mainmodel = new MainWindow
+                {
+                    DataContext = Main,
+                };
+                Current.MainWindow = mainmodel;
+                ShutdownMode = ShutdownMode.OnMainWindowClose;
+                MainWindow.Show();
+            }
         }
 
         private void ConfigureServices(IServiceCollection services)
