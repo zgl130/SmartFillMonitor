@@ -38,6 +38,7 @@ namespace SmartFillMonitor
         {
             base.OnStartup(e);
 
+            SetExceptionHandling();//设置全局异常处理
             ConfigLogging();//配置日志
 
             try
@@ -54,13 +55,11 @@ namespace SmartFillMonitor
                 System.Windows.MessageBox.Show($"应用程序启动失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(-1);
             }
-
-           
-
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Log.CloseAndFlush();
             base.OnExit(e);
         }
 
@@ -71,9 +70,9 @@ namespace SmartFillMonitor
                 .Enrich.WithThreadId()
                 .WriteTo.RichTextBox(LogView, outputTemplate: LogTemplate)
                 .WriteTo.Console(outputTemplate: LogTemplate)
-                .WriteTo.Async(a=>a.File(LogPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: null, outputTemplate: LogTemplate, shared: true))//异步写入
-                //.WriteTo.File(LogPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: null, outputTemplate: LogTemplate, shared: true)//shared多个实例写入,retainedFileCountLimit: null不限制日志个数
-                .WriteTo.SQLite(DbFilePath, tableName: "SystemLog", storeTimestampInUtc: false )
+                .WriteTo.Async(a => a.File(LogPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: null, outputTemplate: LogTemplate, shared: true))//异步写入
+                                                                                                                                                                   //.WriteTo.File(LogPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: null, outputTemplate: LogTemplate, shared: true)//shared多个实例写入,retainedFileCountLimit: null不限制日志个数
+                .WriteTo.SQLite(DbFilePath, tableName: "SystemLog", storeTimestampInUtc: false)
                 //.WriteTo.Async(a=>a.SQLite(DbFilePath,tableName: "SystemLog",storeTimestampInUtc:false,retentionPeriod: TimeSpan.FromDays(365)))//retentionPeriod可以把长期保存日志交给数据库，文件保存设置为90天
                 .CreateLogger();
         }
@@ -87,7 +86,7 @@ namespace SmartFillMonitor
             await UserService.InitializaAsync();
 
             LogServices.Debug("Initial PLC Service");
-            var plcSettings=await ConfigServices.LoadDeviceSettingAsync();
+            var plcSettings = await ConfigServices.LoadDeviceSettingAsync();
             await PlcServices.Initialize(plcSettings);
 
             LogServices.Info("Core Service Initialized successfully");
@@ -101,25 +100,55 @@ namespace SmartFillMonitor
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
             };
             bool? res = loginWindow.ShowDialog();
-            if (res==true)
+            if (res == true)
             {
                 LogServices.Info("登录成功，启动主窗口");
-               var Main = ServiceProvider.GetRequiredService<MainWindowModel>();
+                var Main = ServiceProvider.GetRequiredService<MainWindowModel>();
                 var mainmodel = new MainWindow
                 {
                     DataContext = Main,
+                    WindowStartupLocation= WindowStartupLocation.CenterScreen,
+                    WindowState = WindowState.Maximized,
                 };
                 Current.MainWindow = mainmodel;
                 ShutdownMode = ShutdownMode.OnMainWindowClose;
                 MainWindow.Show();
             }
+            else
+            {
+                Shutdown();
+            }
         }
+
+        private void SetExceptionHandling()
+        {
+            DispatcherUnhandledException += (sender, e) =>
+            {
+                LogServices.Error("UI线程未处理异常", e.Exception);
+                e.Handled = true;
+                System.Windows.MessageBox.Show($"UI异常{e.Exception.Message}","Error",MessageBoxButton.OK,MessageBoxImage.Error);
+            };
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                var ex = e.ExceptionObject as Exception;
+                LogServices.Fatal("非UI线程未处理异常");
+            };
+
+            TaskScheduler.UnobservedTaskException += (sender, e) =>
+            {
+                LogServices.Error("Task,UnobservedTaskException");
+                e.SetObserved();//标记为已经处理，避免程序崩溃
+            };
+
+        }
+
 
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<AlarmsViewModel>();
             services.AddSingleton<DashBoardViewModel>();
-            services.AddSingleton<DataQueryViewModel>();    
+            services.AddSingleton<DataQueryViewModel>();
             services.AddSingleton<LogsViewModel>();
             services.AddSingleton<SettingViewModel>();
             services.AddSingleton<MainWindowModel>();

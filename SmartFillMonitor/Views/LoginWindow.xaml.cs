@@ -85,7 +85,7 @@ namespace SmartFillMonitor.Views
             Close();
         }
 
-        private async Task Login_click(object sender, RoutedEventArgs e)
+        private async void Login_click(object sender, RoutedEventArgs e)
         {
             var username=(UserNameCombo.SelectedValue as string) ?? string.Empty;
             var password = PassWordBox.Password ?? string.Empty;
@@ -95,7 +95,7 @@ namespace SmartFillMonitor.Views
                 UserNameCombo.Focus();
                 return;
             }
-            IsEnabled = true;
+            IsEnabled = false;
 
             try
             {
@@ -105,6 +105,12 @@ namespace SmartFillMonitor.Views
                     DialogResult = true;
                     Close(); 
                 }
+                else
+                {
+                    System.Windows.MessageBox.Show("用户名或者密码错误", "登录失败", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    PassWordBox.Clear();
+                    PassWordBox.Focus();
+                }
             }
             catch 
             {
@@ -112,7 +118,7 @@ namespace SmartFillMonitor.Views
                 PassWordBox.Clear();
                 PassWordBox.Focus();
             }
-            finally { IsEnabled = false; }
+            finally { IsEnabled = true; }
 
         }
 
