@@ -27,6 +27,6 @@
                 </Style>
             </Ellipse.Style>
         </Ellipse>
-        <TextBlock Text="{Binding StatusText ,RelativeSource={RelativeSource AncestorType=UserControl}}" Foreground="{StaticResource AppTextMuted}" FontSize="14"VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding StatusText ,RelativeSource={RelativeSource AncestorType=UserControl}}" Foreground="{StaticResource AppTextMuted}" FontSize="14" VerticalAlignment="Center"/>
     </StackPanel>
 </UserControl>
