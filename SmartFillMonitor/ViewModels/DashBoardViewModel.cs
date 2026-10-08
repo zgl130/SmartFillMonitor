@@ -36,6 +36,9 @@ namespace SmartFillMonitor.ViewModels
         private double runningTime;
 
         [ObservableProperty]
+        private LightState indicatorState = LightState.Off;
+
+        [ObservableProperty]
         private string deviceStatus = "自动运行";
 
         [ObservableProperty]
@@ -138,6 +141,7 @@ namespace SmartFillMonitor.ViewModels
             try
             {
                 DeviceStatus = "启动中";
+                IndicatorState = LightState.Green;
                 await PlcServices.WriteCommandAsync("Start", true);
                 await Task.Delay(2000);
                 DeviceStatus = "运行中";
@@ -156,6 +160,7 @@ namespace SmartFillMonitor.ViewModels
             try
             {
                 DeviceStatus = "停止中";
+                IndicatorState = LightState.Red;
                 await PlcServices.WriteCommandAsync("Stop", true);
                 await Task.Delay(2000);
                 DeviceStatus = "停止中";
@@ -174,6 +179,7 @@ namespace SmartFillMonitor.ViewModels
             try
             {
                 DeviceStatus = "复位中";
+                IndicatorState = LightState.Yellow;
                 await PlcServices.WriteCommandAsync("Stop", true);
                 await Task.Delay(2000);
                 await PlcServices.WriteCommandAsync("Reset", true);

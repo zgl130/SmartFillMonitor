@@ -43,7 +43,7 @@ namespace SmartFillMonitor.UserControls
 
 
         public static readonly DependencyProperty StatusTextProperty =
-        DependencyProperty.Register("StatusText", typeof(string), typeof(StatusIndicator), new PropertyMetadata(false));
+        DependencyProperty.Register("StatusText", typeof(string), typeof(StatusIndicator), new PropertyMetadata("状态"));
         public string StatusText
         {
             get { return (string)GetValue(StatusTextProperty); }
